@@ -21,18 +21,41 @@ function OutputActions({ finalImageSrc, onRestart }) {
             printWindow.document.write(`
         <html>
           <head>
-            <title>Print Photo</title>
+            <title></title>
             <style>
-              body { margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; }
-              img { max-width: 100%; max-height: 100%; }
+              * { margin: 0; padding: 0; }
+              html, body { 
+                width: 100%; 
+                height: 100%; 
+                display: flex; 
+                justify-content: center; 
+                align-items: center;
+                background: white;
+              }
+              img { max-width: 100%; max-height: 100vh; object-fit: contain; }
+              @page { 
+                size: auto;
+                margin: 0mm; 
+              }
               @media print {
-                body { -webkit-print-color-adjust: exact; }
-                img { width: 100%; height: 100%; object-fit: contain; }
+                html, body {
+                  width: 100%;
+                  height: 100%;
+                  margin: 0 !important;
+                  padding: 0 !important;
+                }
+                img { 
+                  width: 100%; 
+                  height: auto;
+                  max-height: 100vh;
+                  -webkit-print-color-adjust: exact;
+                  print-color-adjust: exact;
+                }
               }
             </style>
           </head>
           <body>
-            <img src="${finalImageSrc}" onload="window.print();window.close()" />
+            <img src="${finalImageSrc}" onload="setTimeout(function(){window.print();window.close();},100)" />
           </body>
         </html>
       `);
