@@ -4,19 +4,9 @@ import { uploadToCloudinary } from '../services/cloudinary';
 import QRCodeDisplay from './QRCodeDisplay';
 
 function ResultPage({ imageFile, onRestart }) {
-    const [previewUrl, setPreviewUrl] = useState(null);
     const [uploadStatus, setUploadStatus] = useState('idle'); // idle, uploading, success, error
     const [cloudinaryUrl, setCloudinaryUrl] = useState(null);
     const [errorMessage, setErrorMessage] = useState('');
-
-    // Create preview URL from file
-    useEffect(() => {
-        if (imageFile) {
-            const url = URL.createObjectURL(imageFile);
-            setPreviewUrl(url);
-            return () => URL.revokeObjectURL(url);
-        }
-    }, [imageFile]);
 
     // Auto-upload on mount
     useEffect(() => {
@@ -50,30 +40,15 @@ function ResultPage({ imageFile, onRestart }) {
     return (
         <div className="flex flex-col items-center w-full max-w-md mx-auto p-4">
 
-            {/* Image Preview - Compact */}
-            <div className="relative w-full bg-gray-800/60 rounded-2xl overflow-hidden shadow-2xl mb-6 border border-purple-500/30">
-                {previewUrl ? (
-                    <img
-                        src={previewUrl}
-                        alt="Captured Photo"
-                        className="w-full h-auto max-h-64 object-cover"
-                    />
-                ) : (
-                    <div className="flex items-center justify-center h-48">
-                        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-purple-500"></div>
-                    </div>
-                )}
+            {/* Uploading State */}
+            {uploadStatus === 'uploading' && (
+                <div className="flex flex-col items-center justify-center py-12">
+                    <div className="animate-spin rounded-full h-16 w-16 border-t-3 border-b-3 border-cyan-400 mb-6"></div>
+                    <p className="text-white font-medium text-lg">Uploading to cloud...</p>
+                </div>
+            )}
 
-                {/* Upload Status Overlay */}
-                {uploadStatus === 'uploading' && (
-                    <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center backdrop-blur-sm">
-                        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-cyan-400 mb-4"></div>
-                        <p className="text-white font-medium">Uploading to cloud...</p>
-                    </div>
-                )}
-            </div>
-
-            {/* Upload Status Messages */}
+            {/* Error State */}
             {uploadStatus === 'error' && (
                 <div className="w-full bg-red-500/20 border border-red-500/40 rounded-xl p-4 mb-6">
                     <p className="text-red-300 text-center mb-3">{errorMessage}</p>
@@ -116,3 +91,4 @@ ResultPage.propTypes = {
 };
 
 export default ResultPage;
+
