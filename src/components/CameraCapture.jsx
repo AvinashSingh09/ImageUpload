@@ -2,7 +2,8 @@ import PropTypes from 'prop-types';
 import { useRef } from 'react';
 
 function CameraCapture({ onCapture }) {
-    const fileInputRef = useRef(null);
+    const cameraInputRef = useRef(null);
+    const galleryInputRef = useRef(null);
 
     const handleFileChange = (event) => {
         const file = event.target.files[0];
@@ -12,7 +13,11 @@ function CameraCapture({ onCapture }) {
     };
 
     const triggerCamera = () => {
-        fileInputRef.current?.click();
+        cameraInputRef.current?.click();
+    };
+
+    const triggerGallery = () => {
+        galleryInputRef.current?.click();
     };
 
     return (
@@ -22,13 +27,22 @@ function CameraCapture({ onCapture }) {
                 Take a photo to upload and share instantly via QR code.
             </p>
 
-            {/* Hidden File Input configured for Environment Camera */}
+            {/* Hidden File Input for Camera */}
             <input
                 type="file"
                 accept="image/*"
                 capture="environment"
                 className="hidden"
-                ref={fileInputRef}
+                ref={cameraInputRef}
+                onChange={handleFileChange}
+            />
+
+            {/* Hidden File Input for Gallery (no capture attribute) */}
+            <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                ref={galleryInputRef}
                 onChange={handleFileChange}
             />
 
@@ -44,7 +58,7 @@ function CameraCapture({ onCapture }) {
             </button>
 
             <button
-                onClick={triggerCamera}
+                onClick={triggerGallery}
                 className="w-full py-4 px-6 bg-purple-800/50 hover:bg-purple-700/60 text-white rounded-xl font-medium flex items-center justify-center gap-2 border border-purple-500/30"
             >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -61,3 +75,4 @@ CameraCapture.propTypes = {
 };
 
 export default CameraCapture;
+
