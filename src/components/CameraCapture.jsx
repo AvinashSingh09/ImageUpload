@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { useRef } from 'react';
 
-function CameraCapture({ onCapture, onBack }) {
+function CameraCapture({ onCapture }) {
     const fileInputRef = useRef(null);
 
     const handleFileChange = (event) => {
@@ -19,7 +19,7 @@ function CameraCapture({ onCapture, onBack }) {
         <div className="flex flex-col items-center w-full max-w-md mx-auto p-6 bg-purple-900/60 rounded-2xl backdrop-blur-sm border border-purple-500/30">
             <h2 className="text-2xl font-bold text-white mb-4">Capture Photo</h2>
             <p className="text-purple-200/70 mb-8 text-center">
-                Use your camera to take a photo. For best results, ensure good lighting.
+                Take a photo to upload and share instantly via QR code.
             </p>
 
             {/* Hidden File Input configured for Environment Camera */}
@@ -52,22 +52,12 @@ function CameraCapture({ onCapture, onBack }) {
                 </svg>
                 Upload from Gallery
             </button>
-
-            <div className="mt-6">
-                <button
-                    onClick={onBack}
-                    className="text-purple-300 hover:text-white underline text-sm"
-                >
-                    Select a different frame
-                </button>
-            </div>
         </div>
     );
 }
 
 CameraCapture.propTypes = {
     onCapture: PropTypes.func.isRequired,
-    onBack: PropTypes.func.isRequired,
 };
 
 export default CameraCapture;

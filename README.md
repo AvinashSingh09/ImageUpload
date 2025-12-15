@@ -1,20 +1,41 @@
-# HUL Photo Booth
+# Photo Share App
 
-A mobile-first web application for capturing photos and compositing them into branded frames — designed for events, conferences, and brand activations.
+A simple web application for capturing photos, uploading them to Cloudinary, and generating QR codes for easy sharing.
 
 ## ✨ Features
 
-- **Template Selection** – Choose from pre-configured branded frames
-- **Native Camera Capture** – Uses device camera on mobile (iOS/Android)
-- **Auto-Composition** – Captured photos are automatically placed into the frame
-- **Download & Print** – Export final image as PNG or send directly to printer
+- **Camera Capture** – Take photos using device camera or upload from gallery
+- **Cloud Upload** – Automatically uploads to Cloudinary
+- **QR Code Sharing** – Generates a scannable QR code for the uploaded image
+- **Copy Link** – One-tap copy of the Cloudinary URL
+- **Download QR** – Save the QR code as an image
 
 ## 🛠️ Tech Stack
 
 - **React 19** + **Vite 7**
 - **Tailwind CSS 4** (via @tailwindcss/vite plugin)
-- **HTML5 Canvas** for image composition
+- **Cloudinary** for image hosting
+- **qrcode** for QR code generation
 - Fully client-side — no backend required
+
+## ⚙️ Configuration
+
+Before using, update your Cloudinary credentials in `src/services/cloudinary.js`:
+
+```javascript
+export const CLOUDINARY_CONFIG = {
+    cloudName: 'YOUR_CLOUD_NAME',       // Your Cloudinary cloud name
+    uploadPreset: 'YOUR_UPLOAD_PRESET', // Unsigned upload preset
+    folder: 'photo-booth',              // Folder for uploads
+};
+```
+
+### Setting up Cloudinary
+
+1. Create a free account at [cloudinary.com](https://cloudinary.com)
+2. Go to **Settings** → **Upload** → **Upload presets**
+3. Create a new **unsigned** upload preset
+4. Copy your **Cloud name** (from Dashboard) and **preset name**
 
 ## 🚀 Getting Started
 
@@ -33,40 +54,20 @@ npm run build
 
 ```
 src/
-├── App.jsx                    # Main app with step-based flow
+├── App.jsx                     # Main app (2-step flow)
 ├── components/
-│   ├── TemplateSelector.jsx   # Frame selection UI
-│   ├── CameraCapture.jsx      # Native camera/file input
-│   ├── ImageComposer.jsx      # Canvas compositing logic
-│   └── OutputActions.jsx      # Download/Print buttons
-public/
-└── HUL PNG.png                # Template frame asset
+│   ├── CameraCapture.jsx       # Native camera/file input
+│   ├── QRCodeDisplay.jsx       # QR code generation & display
+│   └── ResultPage.jsx          # Upload status & QR sharing
+├── services/
+│   └── cloudinary.js           # Cloudinary upload service
 ```
 
-## 📱 Mobile Usage
+## 📱 Usage Flow
 
-For best results on mobile:
-1. Open the app URL on your phone
-2. Tap the template to select it
-3. Use "Take Photo" to open native camera
-4. Download or print your framed photo
-
-## 🎨 Customization
-
-**Adding new templates:**
-1. Add your PNG frame to `public/`
-2. Update the `templates` array in `src/components/TemplateSelector.jsx`
-
-**Adjusting photo placement:**
-Edit `INITIAL_CONFIG` in `src/components/ImageComposer.jsx`:
-```js
-const INITIAL_CONFIG = {
-  x: 230,      // Horizontal position
-  y: 705,      // Vertical position
-  width: 1035, // Photo width
-  height: 1140 // Photo height
-};
-```
+1. **Capture** – Open app and tap "Take Photo" or "Upload from Gallery"
+2. **Upload** – Photo automatically uploads to Cloudinary
+3. **Share** – Scan the QR code or copy the URL to share
 
 ## 📄 License
 

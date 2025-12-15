@@ -1,48 +1,21 @@
 import { useState } from 'react';
-import TemplateSelector from './components/TemplateSelector';
 import CameraCapture from './components/CameraCapture';
-import ImageComposer from './components/ImageComposer';
-import OutputActions from './components/OutputActions';
+import ResultPage from './components/ResultPage';
 
 function App() {
-  const [step, setStep] = useState(1);
-  const [selectedTemplate, setSelectedTemplate] = useState(null);
+  const [step, setStep] = useState(1); // 1 = capture, 2 = result
   const [capturedFile, setCapturedFile] = useState(null);
-  const [finalImage, setFinalImage] = useState(null);
 
-  // Step 1: Template Selection
-  const handleTemplateSelect = (template) => {
-    setSelectedTemplate(template);
-    setStep(2);
-  };
-
-  // Step 2: Camera Capture
+  // Step 1: Camera Capture
   const handleCapture = (file) => {
     setCapturedFile(file);
-    setStep(3);
-  };
-
-  const handleBackToTemplates = () => {
-    setSelectedTemplate(null);
-    setStep(1);
-  };
-
-  // Step 3: Composition & Output
-  const handleCompositionComplete = (dataUrl) => {
-    setFinalImage(dataUrl);
-  };
-
-  const handleRetake = () => {
-    setCapturedFile(null);
-    setFinalImage(null);
     setStep(2);
   };
 
+  // Restart flow
   const handleRestart = () => {
     setStep(1);
-    setSelectedTemplate(null);
     setCapturedFile(null);
-    setFinalImage(null);
   };
 
   return (
@@ -51,41 +24,24 @@ function App() {
       {/* Header */}
       <header className="mb-8 text-center">
         <h1 className="text-3xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-teal-300 mb-2">
-          Photo Booth
+          Photo Share
         </h1>
-        <p className="text-purple-200/70">Create your personalized frame in seconds</p>
+        <p className="text-purple-200/70">Capture, upload & share with a QR code</p>
       </header>
 
       {/* Main Content Area */}
       <main className="w-full flex-grow flex flex-col items-center justify-center">
 
         {step === 1 && (
-          <TemplateSelector onSelect={handleTemplateSelect} />
+          <CameraCapture onCapture={handleCapture} />
         )}
 
-        {step === 2 && (
-          <CameraCapture
-            onCapture={handleCapture}
-            onBack={handleBackToTemplates}
-          />
-        )}
-
-        {step === 3 && selectedTemplate && capturedFile && (
-          <div className="w-full flex flex-col items-center animate-in fade-in zoom-in duration-300">
-            <ImageComposer
-              templateSrc={selectedTemplate.src}
-              capturedFile={capturedFile}
-              onCompositionComplete={handleCompositionComplete}
-              onRetake={handleRetake}
+        {step === 2 && capturedFile && (
+          <div className="w-full animate-in fade-in zoom-in duration-300">
+            <ResultPage
+              imageFile={capturedFile}
+              onRestart={handleRestart}
             />
-
-            {/* Show actions only when image is ready */}
-            {finalImage && (
-              <OutputActions
-                finalImageSrc={finalImage}
-                onRestart={handleRestart}
-              />
-            )}
           </div>
         )}
 
@@ -93,7 +49,7 @@ function App() {
 
       {/* Footer */}
       <footer className="mt-12 text-gray-500 text-sm">
-        &copy; {new Date().getFullYear()} Photo Frame App
+        &copy; {new Date().getFullYear()} Photo Share App
       </footer>
 
     </div>
