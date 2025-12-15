@@ -5,6 +5,7 @@ function CameraCapture({ onCapture }) {
     const cameraInputRef = useRef(null);
     const galleryInputRef = useRef(null);
     const [isFullscreen, setIsFullscreen] = useState(false);
+    const wasFullscreenRef = useRef(false);
 
     // Track fullscreen state changes
     useEffect(() => {
@@ -27,15 +28,20 @@ function CameraCapture({ onCapture }) {
     const handleFileChange = (event) => {
         const file = event.target.files[0];
         if (file) {
-            onCapture(file);
+            // Pass the file and whether we should restore fullscreen
+            onCapture(file, wasFullscreenRef.current);
         }
     };
 
     const triggerCamera = () => {
+        // Remember if we were in fullscreen before camera opens
+        wasFullscreenRef.current = isFullscreen;
         cameraInputRef.current?.click();
     };
 
     const triggerGallery = () => {
+        // Remember if we were in fullscreen before gallery opens
+        wasFullscreenRef.current = isFullscreen;
         galleryInputRef.current?.click();
     };
 

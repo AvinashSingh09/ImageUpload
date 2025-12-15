@@ -2,14 +2,35 @@ import { useState } from 'react';
 import CameraCapture from './components/CameraCapture';
 import ResultPage from './components/ResultPage';
 
+// Helper to enter fullscreen
+const enterFullscreen = async () => {
+  try {
+    const elem = document.documentElement;
+    if (elem.requestFullscreen) {
+      await elem.requestFullscreen();
+    } else if (elem.webkitRequestFullscreen) {
+      await elem.webkitRequestFullscreen();
+    }
+  } catch (err) {
+    console.error('Fullscreen error:', err);
+  }
+};
+
 function App() {
   const [step, setStep] = useState(1); // 1 = capture, 2 = result
   const [capturedFile, setCapturedFile] = useState(null);
 
   // Step 1: Camera Capture
-  const handleCapture = (file) => {
+  const handleCapture = (file, restoreFullscreen) => {
     setCapturedFile(file);
     setStep(2);
+
+    // Restore fullscreen after a brief delay (allows UI to update)
+    if (restoreFullscreen) {
+      setTimeout(() => {
+        enterFullscreen();
+      }, 100);
+    }
   };
 
   // Restart flow
@@ -57,3 +78,4 @@ function App() {
 }
 
 export default App;
+
