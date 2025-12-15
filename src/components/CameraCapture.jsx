@@ -1,9 +1,28 @@
 import PropTypes from 'prop-types';
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 
 function CameraCapture({ onCapture }) {
     const cameraInputRef = useRef(null);
     const galleryInputRef = useRef(null);
+    const [isFullscreen, setIsFullscreen] = useState(false);
+
+    // Track fullscreen state changes
+    useEffect(() => {
+        const handleFullscreenChange = () => {
+            setIsFullscreen(
+                !!document.fullscreenElement ||
+                !!document.webkitFullscreenElement
+            );
+        };
+
+        document.addEventListener('fullscreenchange', handleFullscreenChange);
+        document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+
+        return () => {
+            document.removeEventListener('fullscreenchange', handleFullscreenChange);
+            document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
+        };
+    }, []);
 
     const handleFileChange = (event) => {
         const file = event.target.files[0];
@@ -18,6 +37,31 @@ function CameraCapture({ onCapture }) {
 
     const triggerGallery = () => {
         galleryInputRef.current?.click();
+    };
+
+    const toggleFullscreen = async () => {
+        try {
+            if (!isFullscreen) {
+                // Enter fullscreen
+                const elem = document.documentElement;
+                if (elem.requestFullscreen) {
+                    await elem.requestFullscreen();
+                } else if (elem.webkitRequestFullscreen) {
+                    // iOS Safari
+                    await elem.webkitRequestFullscreen();
+                }
+            } else {
+                // Exit fullscreen
+                if (document.exitFullscreen) {
+                    await document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    // iOS Safari
+                    await document.webkitExitFullscreen();
+                }
+            }
+        } catch (err) {
+            console.error('Fullscreen error:', err);
+        }
     };
 
     return (
@@ -66,6 +110,28 @@ function CameraCapture({ onCapture }) {
                 </svg>
                 Upload from Gallery
             </button>
+
+            {/* Fullscreen Toggle Button */}
+            <button
+                onClick={toggleFullscreen}
+                className="mt-6 py-3 px-5 bg-indigo-800/50 hover:bg-indigo-700/60 text-white rounded-xl font-medium flex items-center justify-center gap-2 border border-indigo-500/30 transition-all"
+            >
+                {isFullscreen ? (
+                    <>
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                        Exit Fullscreen
+                    </>
+                ) : (
+                    <>
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                        </svg>
+                        Enter Fullscreen
+                    </>
+                )}
+            </button>
         </div>
     );
 }
@@ -75,4 +141,5 @@ CameraCapture.propTypes = {
 };
 
 export default CameraCapture;
+
 
