@@ -4,7 +4,10 @@ import { useRef, useState, useEffect } from 'react';
 function CameraCapture({ onCapture }) {
     const cameraInputRef = useRef(null);
     const galleryInputRef = useRef(null);
-    const [isFullscreen, setIsFullscreen] = useState(false);
+    // Check actual fullscreen state on init
+    const [isFullscreen, setIsFullscreen] = useState(
+        () => !!document.fullscreenElement || !!document.webkitFullscreenElement
+    );
     const wasFullscreenRef = useRef(false);
 
     // Track fullscreen state changes
